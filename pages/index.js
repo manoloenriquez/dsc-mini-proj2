@@ -49,7 +49,7 @@ export default function Home({ posts }) {
   )
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const client = new ApolloClient({
     uri: 'https://graphql.cosmicjs.com/v3',
     cache: new InMemoryCache()

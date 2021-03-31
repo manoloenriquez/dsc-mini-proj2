@@ -17,8 +17,44 @@ export default function Post({ post }) {
   )
 }
 
-export async function getServerSideProps(context) {
-  const postId = context.query.id
+export async function getStaticPaths() {
+  const client = new ApolloClient({
+    uri: 'https://graphql.cosmicjs.com/v3',
+    cache: new InMemoryCache()
+  })
+
+  const { data } = await client.query({
+    query: gql`
+      {
+        getObjects(
+          bucket_slug: "dsc-mini-project-production",
+          read_key: "ohztgdchBHihfDO4PcPpbpYLnwlFnnY5OfECw9xKXsEKtNc0S0",
+          input: {
+            query: {
+              type: "posts"
+            }
+          }
+        ) {
+          objects {
+            id
+          }
+        }
+      }
+    `
+  })
+
+  const paths = data.getObjects.objects.map(post => ({
+    params: { id: post.id }
+  }))
+
+  return {
+    paths,
+    fallback: false
+  }
+}
+
+export async function getStaticProps(context) {
+  const postId = context.params.id
 
   const client = new ApolloClient({
     uri: 'https://graphql.cosmicjs.com/v3',
@@ -47,3 +83,34 @@ export async function getServerSideProps(context) {
     }
   }
 }
+
+// export async function getServerSideProps(context) {
+//   const postId = context.query.id
+
+//   const client = new ApolloClient({
+//     uri: 'https://graphql.cosmicjs.com/v3',
+//     cache: new InMemoryCache()
+//   })
+
+//   const { data } = await client.query({
+//     query: gql`
+//       {
+//         getObject(
+//           bucket_slug: "dsc-mini-project-production",
+//           read_key: "ohztgdchBHihfDO4PcPpbpYLnwlFnnY5OfECw9xKXsEKtNc0S0",
+//           object_id: "${postId}"
+//         ) {
+//           title,
+//           content,
+//           published_at
+//         }
+//       }
+//     `
+//   })
+
+//   return {
+//     props: {
+//       post: data.getObject
+//     }
+//   }
+// }
