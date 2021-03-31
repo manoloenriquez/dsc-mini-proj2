@@ -25,14 +25,18 @@ export default function Home({ posts }) {
                   src={post.metadata.thumbnail.url} 
                   alt={post.title} 
                   style={{ 
-                    width: '300px', 
+                    width: '100%', 
                     height: '200px', 
-                    objectFit: 'cover' }}
+                    objectFit: 'cover',
+                    borderRadius: '10px 10px 0 0'
+                  }}
                 />
-                <h3>{post.title}</h3>
-                <p>
-                  Posted on {new Date(post.published_at).toLocaleDateString()}
-                </p>
+                <div className='p-2 px-3'>
+                  <h3>{post.title}</h3>
+                  <p>
+                    Posted on {new Date(post.published_at).toLocaleDateString()}
+                  </p>
+                </div>
               </a>
             </Link>
           ))
